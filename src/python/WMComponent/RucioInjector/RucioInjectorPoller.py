@@ -453,6 +453,7 @@ class RucioInjectorPoller(BaseWorkerThread):
                               grouping="ALL",
                               comment=ruleComment,
                               meta=self.metaData)
+
             if not rseName.endswith("_Tape"):
                 # add extra parameters to the Disk rule as defined in the component configuration
                 ruleKwargs.update(self.containerDiskRuleParams)
@@ -464,6 +465,9 @@ class RucioInjectorPoller(BaseWorkerThread):
                     rseName = rseName.replace("cms_type=real", "cms_type=test")
             else:
                 # then it's a T0 container placement
+                if not rseName.endswith("_Tape"):
+                    # add lifetime for T0 export activity
+                    ruleKwargs['lifetime'] = 18*30*24*60*60
                 if self.testRSEs:
                     rseName = "%s_Test" % rseName
                 #Checking whether we need to ask for rule approval
